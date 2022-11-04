@@ -27,30 +27,26 @@ divRef.addEventListener("click", zoomOnClick);
 
 function zoomOnClick(evt) {
   evt.preventDefault();
+  if (evt.target.nodeName !== "IMG") {
+    return;
+  }
+  // if (!evt.target.classList.contains("gallery__image")) {
+  //   return;
+  // }
   const urlRef = evt.target.dataset.source;
-
   const instance = basicLightbox.create(
     `<img src="${urlRef}" width="800" height="600">`,
     {
-      onShow: (instance) => onOpenImg(),
-      onClose: (instance) => onCloseImg(),
+      onShow: () => document.addEventListener("keydown", onEscape),
+      onClose: () => document.removeEventListener("keydown", onEscape),
     }
   );
   instance.show();
 
-}
-
-
-
-function onOpenImg() {
-  window.addEventListener("keydown", onEscPress);
-}
-function onCloseImg() {
-  window.removeEventListener("keydown", onEscPress);
-}
-
-function onEscPress(event) {
-  if (event.code === "Escape") {
-    onCloseImg();
+  function onEscape(evt) {
+    // console.log(evt.code);
+    if (evt.code === "Escape") {
+      instance.close();
+    }
   }
 }
